@@ -1,648 +1,938 @@
 # Changing Hydroclimatic Regimes and Extreme Precipitation Dynamics in the Eastern Black Sea Region of Türkiye
 
-### A NASA POWER-Based Hydroclimatic and Extreme Precipitation Analysis
+### An Integrated NASA POWER-Based Hydroclimatic, Extreme Precipitation, Time-Frequency and Regime Analysis
 
 **Author:** Ahmet Solmaz
 **Study Region:** Eastern Black Sea Region, Türkiye
-**Data Source:** NASA POWER
+**Data Source:** NASA Prediction of Worldwide Energy Resources (NASA POWER)
 **Programming Environment:** R
 **Study Period:** 1990–2025
+**Research Domains:** Hydroclimatology · Climate Variability · Extreme Precipitation · Climate Statistics · Time-Series Analysis · Extreme Value Theory · Climate Regime Detection
 
 ---
 
-## 1. Overview
+## Abstract
 
-The Eastern Black Sea Region of Türkiye is one of the country's most distinctive hydroclimatic environments, characterized by high precipitation, strong seasonal variability, steep topographic gradients, high atmospheric humidity, and frequent heavy precipitation events.
+The Eastern Black Sea Region of Türkiye represents one of the country's most complex hydroclimatic environments, characterized by high precipitation totals, strong seasonality, pronounced topographic controls, elevated atmospheric moisture, and frequent high-intensity precipitation events.
 
-Although the region is generally recognized as a humid environment, changes in temperature, atmospheric moisture, precipitation intensity, and evaporative demand may substantially modify its hydroclimatic regime. Therefore, evaluating only long-term mean precipitation trends is insufficient to understand the changing characteristics of the regional climate.
+This project, independently developed by **Ahmet Solmaz**, investigates the changing hydroclimatic structure and extreme precipitation dynamics of the Eastern Black Sea Region using daily meteorological data obtained from the **NASA POWER** database for the period 1990–2025.
 
-This project investigates the **temporal evolution of hydroclimatic regimes and extreme precipitation dynamics in the Eastern Black Sea Region of Türkiye** using daily meteorological data obtained from the NASA Prediction of Worldwide Energy Resources (NASA POWER) database.
+Rather than evaluating climate change exclusively through changes in mean precipitation, the study adopts a multidimensional statistical framework designed to investigate changes in precipitation intensity, frequency, persistence, distributional structure, hydroclimatic moisture balance, temporal periodicity, structural breaks, extreme-event probability, and statistical regime behavior.
 
-Rather than focusing exclusively on whether precipitation has increased or decreased, the study investigates whether the **structure, intensity, persistence, frequency, and statistical behavior of hydroclimatic extremes have changed over time**.
+The analytical framework integrates hydroclimatic indices, precipitation-extreme indicators, modified Mann–Kendall trend analysis, Sen's slope estimation, Pettitt change-point detection, PELT segmentation, quantile regression, Extreme Value Theory (EVT), GEV/GPD/POT approaches, wavelet analysis, wavelet coherence, principal component analysis (PCA), clustering, correlation analysis, and multivariate regime identification.
 
-The analytical framework combines climate indices, non-parametric trend analysis, change-point detection, quantile regression, extreme value theory, wavelet analysis, and regime-switching models.
-
----
-
-# 2. Research Objectives
-
-The primary objective is to identify long-term changes in hydroclimatic conditions and extreme precipitation behavior across the Eastern Black Sea Region.
-
-The study specifically aims to:
-
-1. Characterize the long-term variability of precipitation and temperature.
-2. Quantify changes in precipitation intensity and frequency.
-3. Detect trends in extreme precipitation indices.
-4. Identify statistically significant climate regime shifts.
-5. Determine possible abrupt change points in hydroclimatic time series.
-6. Investigate changes across different precipitation quantiles rather than only in the mean.
-7. Estimate extreme precipitation return levels using Extreme Value Theory.
-8. Examine temporal periodicities and frequency-dependent relationships using wavelet analysis.
-9. Identify distinct hydroclimatic regimes using regime-switching models.
-10. Evaluate the persistence and transition probabilities of different climate regimes.
-11. Compare hydroclimatic behavior among selected locations across the Eastern Black Sea Region.
-12. Develop an integrated statistical framework for understanding changing precipitation extremes in a humid climatic environment.
+The central scientific premise is that a hydroclimatic system may undergo substantial structural changes even when changes in its long-term mean are relatively modest. Consequently, the project places particular emphasis on the **upper tail of the precipitation distribution, abrupt structural transitions, temporal-scale dependence, and shifts between hydroclimatic regimes**.
 
 ---
 
-# 3. Study Area
+# 1. Research Motivation
 
-The analysis focuses on the Eastern Black Sea Region of Türkiye, including representative locations distributed across the coastal and inland climatic gradients.
+The Eastern Black Sea Region is frequently described as one of the wettest environments in Türkiye. However, high climatological precipitation does not imply a temporally or statistically stationary hydroclimatic regime.
 
-The study region is characterized by:
+A changing climate may simultaneously modify:
 
-* High annual precipitation
-* Strong precipitation seasonality
-* High relative humidity
-* Frequent heavy rainfall events
-* Strong topographic influence
-* Distinct coastal–inland hydroclimatic gradients
-* Substantial variability in temperature and atmospheric moisture
+* precipitation intensity,
+* frequency of heavy precipitation,
+* duration of wet and dry periods,
+* atmospheric moisture conditions,
+* evaporative demand,
+* drought characteristics,
+* precipitation distribution tails,
+* temporal persistence,
+* periodic behavior,
+* and the probability of rare extreme events.
 
-The combination of high precipitation and complex topography makes the Eastern Black Sea Region particularly suitable for investigating changes in precipitation extremes and hydroclimatic regimes.
+Therefore, a conventional linear trend analysis is insufficient to describe the complete evolution of the regional hydroclimatic system.
 
----
-
-# 4. Data Source
-
-Meteorological data are obtained from the **NASA Prediction of Worldwide Energy Resources (NASA POWER)** project.
-
-The analysis primarily uses daily observations/reanalysis-derived estimates of the following variables:
-
-| Variable            | NASA POWER Parameter | Description                         |
-| ------------------- | -------------------- | ----------------------------------- |
-| Precipitation       | PRECTOTCORR          | Corrected precipitation             |
-| Air Temperature     | T2M                  | Mean air temperature                |
-| Maximum Temperature | T2M_MAX              | Daily maximum temperature           |
-| Minimum Temperature | T2M_MIN              | Daily minimum temperature           |
-| Relative Humidity   | RH2M                 | Relative humidity at 2 m            |
-| Wind Speed          | WS10M                | Wind speed at 10 m                  |
-| Solar Radiation     | ALLSKY_SFC_SW_DWN    | All-sky surface shortwave radiation |
-
-The primary study period is **1990–2025**, allowing the investigation of multi-decadal hydroclimatic variability and changes in extreme precipitation.
+This project addresses this limitation by combining **trend, distributional, change-point, extreme-value, time-frequency, multivariate and regime-based statistical approaches** within a unified framework.
 
 ---
 
-# 5. Data Processing
+# 2. Main Research Questions
 
-The raw NASA POWER data are processed using R.
+The project addresses the following questions:
 
-The preprocessing workflow includes:
+### RQ1 — Long-Term Hydroclimatic Change
 
-* Data import
-* Date conversion
-* Missing-value assessment
-* Quality control
-* Outlier screening
-* Temporal aggregation
-* Seasonal classification
-* Annual aggregation
-* Generation of precipitation indices
-* Generation of temperature and moisture indicators
-* Preparation of time series for statistical analysis
+Have annual and seasonal hydroclimatic conditions changed systematically during 1990–2025?
 
-Extreme observations are carefully evaluated rather than automatically removed, because exceptionally high precipitation values may represent genuine climatic extremes rather than data errors.
+### RQ2 — Extreme Precipitation
 
----
+Have heavy and extreme precipitation events changed in frequency, magnitude or persistence?
 
-# 6. Hydroclimatic Indicators
+### RQ3 — Distributional Change
 
-The study evaluates hydroclimatic variability through several complementary indicators.
+Are changes concentrated in the upper and lower portions of the precipitation distribution rather than in the mean alone?
 
-## 6.1 Precipitation
+### RQ4 — Structural Breaks
 
-The following precipitation characteristics are calculated:
+Have statistically identifiable shifts occurred within the regional hydroclimatic time series?
 
-* Annual precipitation
-* Seasonal precipitation
-* Wet-day frequency
-* Precipitation intensity
-* Maximum 1-day precipitation
-* Maximum 5-day precipitation
-* Consecutive wet days
-* Consecutive dry days
+### RQ5 — Temporal Dependence
 
----
+Do precipitation and atmospheric variables exhibit statistically meaningful periodicities at different temporal scales?
 
-## 6.2 Potential Evapotranspiration
+### RQ6 — Moisture Balance
 
-Potential evapotranspiration is estimated using the **FAO-56 Penman–Monteith approach**, where the required meteorological variables are available.
+Has the regional moisture balance changed despite the generally humid character of the Eastern Black Sea climate?
 
-PET provides an important measure of atmospheric evaporative demand and allows precipitation to be evaluated together with atmospheric water demand.
+### RQ7 — Hydroclimatic Regimes
+
+Can the observed climate variability be represented by distinct statistical regimes?
+
+### RQ8 — Regime Persistence
+
+How persistent are individual regimes and how frequently does the system transition between them?
+
+### RQ9 — Spatial Differentiation
+
+Do stations located in different hydroclimatic settings exhibit different precipitation and extreme-event characteristics?
+
+### RQ10 — Tail Risk
+
+Has the statistical probability of rare precipitation events changed through time?
 
 ---
 
-## 6.3 Drought and Moisture Indicators
+# 3. Data and Study Design
 
-The analysis includes:
+The analysis uses daily meteorological information derived from NASA POWER for the Eastern Black Sea Region.
 
-* Standardized Precipitation Index (SPI)
-* Standardized Precipitation Evapotranspiration Index (SPEI)
-* Aridity Index
-* Precipitation minus potential evapotranspiration (P − PET)
+The study period covers:
 
-These indicators allow the study to investigate whether a traditionally humid environment is experiencing changes in its hydroclimatic moisture balance.
+**1990–2025**
 
----
+The analysis is designed to capture both:
 
-# 7. Extreme Precipitation Indices
+* long-term hydroclimatic variability,
+* and high-frequency extreme precipitation behavior.
 
-A major component of the project is the analysis of precipitation extremes.
-
-The study uses internationally recognized precipitation indices, including:
-
-| Index   | Description                              |
-| ------- | ---------------------------------------- |
-| Rx1day  | Maximum 1-day precipitation              |
-| Rx5day  | Maximum consecutive 5-day precipitation  |
-| R10mm   | Number of days with precipitation ≥10 mm |
-| R20mm   | Number of days with precipitation ≥20 mm |
-| R95p    | Precipitation from very wet days         |
-| R99p    | Precipitation from extremely wet days    |
-| SDII    | Simple precipitation intensity index     |
-| CDD     | Consecutive dry days                     |
-| CWD     | Consecutive wet days                     |
-| PRCPTOT | Annual precipitation from wet days       |
-
-These indices provide information about both the **frequency and intensity** of precipitation extremes.
+The workflow transforms the daily data into the temporal structures required for individual statistical analyses, including annual, seasonal, monthly and event-based indicators.
 
 ---
 
-# 8. Statistical Methodology
+# 4. Statistical Framework
 
-## 8.1 Descriptive Statistics
+The project is deliberately designed as an integrated statistical framework rather than a collection of independent analyses.
 
-Initial statistical characterization includes:
-
-* Mean
-* Median
-* Standard deviation
-* Coefficient of variation
-* Minimum
-* Maximum
-* Skewness
-* Kurtosis
-
-These statistics are used to describe the distribution and variability of hydroclimatic variables.
-
----
-
-# 9. Mann–Kendall Trend Analysis
-
-The **Modified Mann–Kendall test** is applied to identify statistically significant monotonic trends while accounting for potential serial correlation in meteorological time series.
-
-The analysis is performed for:
-
-* Precipitation
-* Temperature
-* PET
-* SPI
-* SPEI
-* Extreme precipitation indices
-
-The direction and statistical significance of temporal trends are evaluated separately.
-
----
-
-# 10. Sen's Slope Estimator
-
-Sen's slope is used to quantify the magnitude of detected trends.
-
-While Mann–Kendall determines whether a statistically significant monotonic trend exists, Sen's slope estimates the rate of change.
-
-This provides an interpretable measure such as:
-
-> millimeters per year
-
-or
-
-> degrees Celsius per decade.
-
----
-
-# 11. Change-Point Analysis
-
-Changes in hydroclimatic regimes are investigated using multiple change-point methods.
-
-### Pettitt Test
-
-The Pettitt test is used to identify statistically significant single change points in the time series.
-
-### PELT
-
-The **Pruned Exact Linear Time (PELT)** algorithm is used to identify potentially multiple structural changes.
-
-This allows the analysis to distinguish between:
-
-* Gradual trends
-* Abrupt changes
-* Multiple regime shifts
-
-The combination of Pettitt and PELT provides a more comprehensive assessment of temporal structural changes.
-
----
-
-# 12. Quantile Regression
-
-Conventional regression focuses primarily on changes in the mean.
-
-However, changes in precipitation extremes may occur mainly in the upper tail of the distribution.
-
-Therefore, **quantile regression** is applied to selected precipitation variables at multiple quantiles:
-
-* 0.10
-* 0.25
-* 0.50
-* 0.75
-* 0.90
-* 0.95
-* 0.99
-
-This approach allows the study to determine whether changes are concentrated in the lower, central, or extreme portions of the precipitation distribution.
-
-A particularly important research question is whether extreme precipitation has changed even when the long-term mean precipitation trend remains weak.
-
----
-
-# 13. Extreme Value Theory
-
-Extreme Value Theory (EVT) is used to characterize the statistical behavior of rare precipitation events.
-
-## 13.1 Generalized Extreme Value Model
-
-The **Generalized Extreme Value (GEV)** distribution is applied to block maxima, particularly annual maximum precipitation.
-
-The analysis estimates:
-
-* Distribution parameters
-* Return levels
-* Return periods
-* Confidence intervals
-
-Return levels are estimated for selected return periods such as:
-
-* 10 years
-* 25 years
-* 50 years
-* 100 years
-
----
-
-## 13.2 Generalized Pareto Distribution
-
-The **Generalized Pareto Distribution (GPD)** is applied using the **Peaks Over Threshold (POT)** approach.
-
-This method allows extreme precipitation events exceeding a defined threshold to be analyzed directly.
-
-The EVT component provides an estimate of the probability and magnitude of rare precipitation events.
-
----
-
-# 14. Wavelet Analysis
-
-Climate time series frequently contain variability at multiple temporal scales.
-
-Therefore, wavelet analysis is used to investigate changes in precipitation variability across different time scales.
-
-The analysis includes:
-
-### Continuous Wavelet Transform
-
-Used to identify dominant periodicities in precipitation and hydroclimatic variables.
-
-### Wavelet Coherence
-
-Used to examine time-frequency relationships between variables such as:
-
-* Temperature and precipitation
-* Relative humidity and precipitation
-* PET and precipitation
-* SPI and precipitation
-
-This allows the analysis to determine whether relationships remain stable over time or become stronger/weaker during specific periods.
-
----
-
-# 15. Hydroclimatic Regime Analysis
-
-One of the central components of the project is the identification of distinct hydroclimatic regimes.
-
-Potential regimes include:
-
-* Humid regime
-* Normal regime
-* Dry regime
-* Extreme precipitation regime
-
-The classification is based on combinations of:
-
-* Precipitation
-* Temperature
-* PET
-* SPI
-* SPEI
-* Relative humidity
-* Extreme precipitation indicators
-
----
-
-# 16. Markov-Switching Model
-
-A **Markov-Switching Model** is used to identify hidden temporal regimes within the hydroclimatic system.
-
-The model allows the statistical properties of the time series to vary depending on the underlying climatic state.
-
-The analysis estimates:
-
-* Regime-specific means
-* Regime-specific variability
-* Transition probabilities
-* Regime persistence
-* Expected regime duration
-* Probability of transition between hydroclimatic states
-
-This approach provides a dynamic perspective on hydroclimatic change rather than assuming that the entire study period represents a single stationary climate regime.
-
----
-
-# 17. Multivariate Analysis
-
-Because hydroclimatic variability is controlled by several interacting variables, multivariate methods are also considered.
-
-## Principal Component Analysis
-
-PCA is used to identify the dominant dimensions of hydroclimatic variability.
-
-Potential input variables include:
-
-* Precipitation
-* Temperature
-* Relative humidity
-* PET
-* SPI
-* SPEI
-* Extreme precipitation indices
-
-The objective is to identify the major components explaining regional hydroclimatic variability.
-
----
-
-# 18. Cluster Analysis
-
-Hierarchical clustering and/or k-means clustering are used to classify locations according to their hydroclimatic characteristics.
-
-This allows the identification of groups with similar:
-
-* Precipitation regimes
-* Temperature behavior
-* Moisture conditions
-* Extreme precipitation characteristics
-* Hydroclimatic variability
-
-The resulting clusters can reveal differences between coastal and inland climatic environments.
-
----
-
-# 19. Correlation Analysis
-
-Relationships among hydroclimatic variables are investigated using:
-
-* Pearson correlation
-* Spearman rank correlation
-* Kendall's tau
-
-The analysis focuses on relationships between:
-
-**Temperature ↔ Precipitation**
-
-**Humidity ↔ Precipitation**
-
-**PET ↔ Precipitation**
-
-**Temperature ↔ PET**
-
-**SPI ↔ SPEI**
-
-These analyses provide an initial assessment of interactions before applying more advanced time-series methods.
-
----
-
-# 20. Integrated Analytical Framework
-
-The complete methodology follows the sequence:
+The analytical sequence is:
 
 ```text
-NASA POWER Daily Data
-        ↓
-Data Quality Control
-        ↓
-Temporal Aggregation
-        ↓
-Hydroclimatic Indicators
-        ↓
-Extreme Precipitation Indices
-        ↓
-SPI / SPEI / PET
-        ↓
-Modified Mann–Kendall
-        ↓
-Sen's Slope
-        ↓
-Pettitt Test
-        ↓
-PELT Change-Point Analysis
-        ↓
-Quantile Regression
-        ↓
-Extreme Value Theory
-        ↓
-GEV / GPD / POT
-        ↓
-Wavelet Analysis
-        ↓
-Wavelet Coherence
-        ↓
-PCA / Cluster Analysis
-        ↓
-Markov-Switching Model
-        ↓
-Hydroclimatic Regime Interpretation
+NASA POWER Daily Meteorological Data
+                ↓
+        Data Quality Control
+                ↓
+       Temporal Aggregation
+                ↓
+     Hydroclimatic Indicators
+                ↓
+   Precipitation Extreme Indices
+                ↓
+        SPI / SPEI / PET
+                ↓
+    Trend and Monotonicity Tests
+                ↓
+       Modified Mann–Kendall
+                ↓
+          Sen's Slope
+                ↓
+        Pettitt Test
+                ↓
+       PELT Segmentation
+                ↓
+       Quantile Regression
+                ↓
+    Extreme Value Theory
+                ↓
+       GEV / GPD / POT
+                ↓
+        Wavelet Analysis
+                ↓
+       Wavelet Coherence
+                ↓
+       PCA / Clustering
+                ↓
+   Multivariate Regime Analysis
+                ↓
+ Hydroclimatic Regime Interpretation
 ```
 
----
-
-# 21. Main Research Questions
-
-The project is designed around several central research questions:
-
-### RQ1
-
-Has annual and seasonal precipitation significantly changed in the Eastern Black Sea Region since 1990?
-
-### RQ2
-
-Have extreme precipitation events become more frequent or intense?
-
-### RQ3
-
-Are changes in precipitation concentrated in the upper tail of the distribution?
-
-### RQ4
-
-Have abrupt shifts occurred in the regional hydroclimatic regime?
-
-### RQ5
-
-Do precipitation and atmospheric moisture relationships vary across time scales?
-
-### RQ6
-
-Has evaporative demand altered the regional moisture balance despite the region's humid climatic characteristics?
-
-### RQ7
-
-Can the hydroclimatic system be represented by distinct statistical regimes?
-
-### RQ8
-
-How persistent are these regimes, and how frequently does the system transition between them?
-
-### RQ9
-
-Are coastal and inland locations characterized by different extreme precipitation regimes?
-
-### RQ10
-
-Are rare precipitation events becoming statistically more probable?
+This structure allows the project to move from simple temporal changes toward increasingly complex questions concerning **distributional change, non-stationarity, periodicity and regime transitions**.
 
 ---
 
-# 22. Expected Scientific Contribution
+# 5. Hydroclimatic Indicators
 
-The main contribution of this project is the integration of **trend analysis, extreme-value statistics, time-frequency analysis, and regime-switching methodology** within a single hydroclimatic framework.
+The first analytical layer evaluates the fundamental hydroclimatic state of the region.
 
-The study does not interpret climate change solely through changes in average temperature or total precipitation.
+The project investigates:
 
-Instead, it examines:
+* precipitation variability,
+* precipitation anomalies,
+* drought characteristics,
+* atmospheric moisture,
+* potential evapotranspiration,
+* moisture balance,
+* and hydroclimatic indices.
 
-* Changes in precipitation intensity
-* Changes in extreme-event frequency
-* Distributional changes
-* Structural breaks
-* Temporal periodicities
-* Hydroclimatic moisture balance
-* Extreme-event probabilities
-* Regime persistence
-* Regime transitions
+The corresponding results are stored in:
 
-This multidimensional framework can provide a more comprehensive understanding of how hydroclimatic variability is evolving in one of Türkiye's most precipitation-sensitive regions.
+* `East_BlackSea_Drought_Aridity_Indices.xlsx`
+* `East_BlackSea_Precipitation_Indices.xlsx`
+* `East_BlackSea_Master_Analysis.xlsx`
+
+These outputs provide the baseline required for interpreting subsequent extreme-event and regime analyses.
 
 ---
 
-# 23. Reproducible Research
+# 6. Drought, Aridity and Moisture-Balance Analysis
+
+The project does not treat precipitation independently from atmospheric demand.
+
+Hydroclimatic conditions are evaluated through indicators including:
+
+* SPI,
+* SPEI,
+* PET,
+* precipitation-based indices,
+* aridity-related indicators,
+* and moisture-balance variables.
+
+This is particularly important for the Eastern Black Sea Region because a precipitation-rich climate can still experience changes in effective moisture availability when atmospheric demand and temperature conditions evolve.
+
+The analysis therefore distinguishes between:
+
+**precipitation availability**
+
+and
+
+**effective hydroclimatic moisture conditions**.
+
+This distinction provides a stronger basis for understanding climate-system restructuring than precipitation totals alone.
+
+---
+
+# 7. Extreme Precipitation Analysis
+
+A major component of the study is the analysis of precipitation extremes using internationally established precipitation-extreme concepts.
+
+The project evaluates changes in indicators associated with:
+
+* heavy precipitation,
+* extreme precipitation,
+* precipitation intensity,
+* wet-day behavior,
+* consecutive precipitation characteristics,
+* and the statistical tails of the precipitation distribution.
+
+The principal output is:
+
+`East_BlackSea_ETCCDI_Extremes.xlsx`
+
+The resulting analysis is designed to answer an important question:
+
+> Is the hydroclimatic change occurring primarily in average precipitation, or is the precipitation distribution itself becoming more extreme?
+
+This distinction is central to climate-risk assessment because changes in extreme precipitation may have substantially greater environmental and societal consequences than changes in long-term mean precipitation.
+
+---
+
+# 8. Trend Analysis
+
+Long-term trends are investigated using non-parametric statistical methods.
+
+### Modified Mann–Kendall Test
+
+The Modified Mann–Kendall framework is used to identify monotonic temporal trends while accounting for temporal dependence where appropriate.
+
+### Sen's Slope
+
+Sen's slope provides a robust estimate of the magnitude and direction of detected trends.
+
+Together, these methods allow the analysis to distinguish:
+
+* increasing trends,
+* decreasing trends,
+* statistically weak trends,
+* and trend magnitude.
+
+The corresponding results are compiled in:
+
+`East_BlackSea_Trend_Analysis_Results.xlsx`
+
+The purpose is not simply to determine whether precipitation increased or decreased, but to establish **which hydroclimatic characteristics exhibit systematic temporal evolution and how strong those changes are**.
+
+---
+
+# 9. Pettitt Change-Point Analysis
+
+Trend analysis alone assumes a relatively continuous temporal structure.
+
+The Pettitt test addresses a different question:
+
+> Did the statistical behavior of the series change abruptly at a particular point in time?
+
+The results are stored in:
+
+`East_BlackSea_Pettitt_Test_Results.xlsx`
+
+Change-point analysis is particularly important because a climate series may contain multiple periods with different statistical characteristics.
+
+Consequently, a single trend estimated over the complete period may conceal substantial internal structural changes.
+
+---
+
+# 10. PELT Change-Point Detection
+
+To complement the Pettitt test, the project applies **PELT (Pruned Exact Linear Time)** change-point analysis.
+
+PELT provides a more flexible segmentation framework capable of identifying multiple structural changes within a time series.
+
+Results are stored in:
+
+`East_BlackSea_PELT_Change_Points.xlsx`
+
+The combined Pettitt–PELT framework strengthens the structural-break analysis by allowing the project to investigate both:
+
+* individual statistically dominant change points,
+* and multiple potential regime boundaries.
+
+This is an important methodological step toward identifying **hydroclimatic regime transitions rather than merely long-term trends**.
+
+---
+
+# 11. Quantile Regression
+
+One of the most important methodological components of the project is **quantile regression**.
+
+Conventional linear regression estimates changes in the conditional mean.
+
+However, climate change may affect different parts of a distribution differently.
+
+For this reason, the analysis evaluates changes across different quantiles of precipitation behavior.
+
+Conceptually:
+
+```text
+Lower Quantiles
+      ↓
+Central Distribution
+      ↓
+Upper Quantiles
+      ↓
+Extreme Tail
+```
+
+This allows the study to investigate whether temporal changes are:
+
+* approximately uniform across the distribution,
+* concentrated around the median,
+* or amplified toward the upper precipitation tail.
+
+Results are stored in:
+
+`East_BlackSea_Quantile_Regression.xlsx`
+
+This component provides a direct statistical framework for evaluating whether **extreme precipitation is evolving differently from ordinary precipitation**.
+
+---
+
+# 12. Extreme Value Theory
+
+Extreme Value Theory constitutes one of the most advanced components of the project.
+
+The analysis uses:
+
+### Generalized Extreme Value Distribution — GEV
+
+The GEV framework is used to characterize block maxima and the statistical behavior of extreme precipitation.
+
+### Generalized Pareto Distribution — GPD
+
+The GPD framework is used for threshold-exceedance analysis.
+
+### Peaks Over Threshold — POT
+
+The POT framework focuses specifically on precipitation events exceeding statistically defined thresholds.
+
+The corresponding results are stored in:
+
+`East_BlackSea_EVT_Results.xlsx`
+
+This framework shifts the research question from:
+
+> "How has average precipitation changed?"
+
+toward:
+
+> "How has the probability structure of rare precipitation events changed?"
+
+This distinction substantially increases the relevance of the analysis for hydrological risk, flood hazard assessment and climate adaptation.
+
+---
+
+# 13. Wavelet Analysis
+
+Climate variability is inherently multiscale.
+
+A precipitation series may simultaneously contain:
+
+* short-term variability,
+* seasonal oscillations,
+* interannual variability,
+* multi-year periodicities,
+* and non-stationary oscillations.
+
+Wavelet analysis is therefore used to identify temporal-frequency structures that conventional trend methods cannot detect.
+
+The corresponding output is:
+
+`East_BlackSea_Wavelet_Analysis.xlsx`
+
+The wavelet framework investigates:
+
+* dominant periodicities,
+* temporal localization of oscillations,
+* changes in periodic behavior,
+* and non-stationary variability.
+
+---
+
+# 14. Wavelet Coherence
+
+Wavelet coherence extends the analysis by investigating the time-frequency relationship between hydroclimatic variables.
+
+This allows the project to investigate whether relationships such as:
+
+```text
+Temperature ↔ Precipitation
+Humidity ↔ Precipitation
+PET ↔ Precipitation
+SPI ↔ SPEI
+```
+
+remain stable through time or vary across temporal scales.
+
+This is particularly important because a strong correlation at an annual scale does not necessarily imply the same relationship at seasonal or interannual scales.
+
+---
+
+# 15. Correlation Structure
+
+The project applies multiple correlation frameworks:
+
+* Pearson correlation,
+* Spearman rank correlation,
+* Kendall's tau.
+
+The correlation analysis evaluates relationships among:
+
+* temperature,
+* precipitation,
+* humidity,
+* PET,
+* SPI,
+* SPEI.
+
+The results are supported by:
+
+`Station_Correlation_Analysis.xlsx`
+
+and the publication-quality visualization:
+
+`Academic_Correlation_Heatmap.png`
+
+### Academic Correlation Heatmap
+
+![Academic Correlation Heatmap](Academic_Correlation_Heatmap.png)
+
+The correlation structure provides an initial assessment of hydroclimatic dependence before the application of more advanced multivariate and time-frequency approaches.
+
+---
+
+# 16. Principal Component Analysis
+
+Principal Component Analysis (PCA) is used to reduce the dimensionality of the hydroclimatic system and identify the dominant modes of variability.
+
+The principal output is:
+
+`Hydroclimatological_PCA_Analysis.xlsx`
+
+Two major graphical outputs are included:
+
+### PCA Scree Plot
+
+![PCA Scree Plot](PCA_ScreePlot_Academic.png)
+
+The scree plot evaluates the relative contribution of successive principal components and identifies the dominant dimensions of hydroclimatic variability.
+
+### PCA Variable Biplot
+
+![PCA Variable Biplot](PCA_Variable_Biplot_Academic.png)
+
+The variable biplot provides an interpretable representation of the relationships among hydroclimatic variables and their contribution to the principal components.
+
+Together, these analyses help identify the variables that most strongly structure the regional hydroclimatic system.
+
+---
+
+# 17. Station Clustering
+
+The project also evaluates similarities and differences among locations using clustering-based approaches.
+
+The main outputs include:
+
+`Station_Clustering_Report.xlsx`
+
+and:
+
+`Publication_Quality_Clustering.png`
+
+### Station Clustering
+
+![Publication Quality Clustering](Publication_Quality_Clustering.png)
+
+The clustering framework is particularly useful for determining whether stations can be grouped according to similar hydroclimatic behavior.
+
+This provides an empirical basis for distinguishing potential:
+
+* coastal regimes,
+* inland regimes,
+* humid regimes,
+* transitional regimes,
+* and extreme-precipitation-sensitive station groups.
+
+---
+
+# 18. Multivariate Hydroclimatic Regime Analysis
+
+The central conceptual contribution of the project is the transition from individual-variable analysis toward **multivariate hydroclimatic regime identification**.
+
+The project combines multiple indicators to characterize statistically distinguishable hydroclimatic states.
+
+The principal output is:
+
+`Analysis_24_Multivariate_Regime_Results.xlsx`
+
+The framework is designed to investigate whether the regional hydroclimatic system can be represented by different states characterized by combinations of:
+
+* precipitation,
+* atmospheric moisture,
+* drought,
+* evaporative demand,
+* extreme precipitation,
+* and temporal variability.
+
+This represents a substantial conceptual shift from traditional trend analysis.
+
+---
+
+# 19. Station-Level Regime Visualizations
+
+The project includes publication-oriented regime figures for several major stations.
+
+## Artvin
+
+![Artvin Hydroclimatic Regimes](Artvin_Regimes_Academic.png)
+
+## Giresun
+
+![Giresun Hydroclimatic Regimes](Giresun_Regimes_Academic.png)
+
+## Ordu
+
+![Ordu Hydroclimatic Regimes](Ordu_Regimes_Academic.png)
+
+## Rize
+
+![Rize Hydroclimatic Regimes](Rize_Regimes_Academic.png)
+
+## Trabzon
+
+![Trabzon Hydroclimatic Regimes](Trabzon_Regimes_Academic.png)
+
+These station-level visualizations provide a direct representation of temporal changes in hydroclimatic states and allow comparisons among different parts of the Eastern Black Sea Region.
+
+---
+
+# 20. Regime Interpretation
+
+The regime framework is not intended simply to classify individual years.
+
+Its purpose is to identify whether the hydroclimatic system exhibits:
+
+* persistent states,
+* recurrent states,
+* transitional periods,
+* abrupt shifts,
+* periods of enhanced precipitation activity,
+* periods of reduced hydroclimatic moisture,
+* and changes in the frequency or duration of particular states.
+
+The regime perspective therefore complements both the change-point and extreme-value analyses.
+
+---
+
+# 21. Integrated Results
+
+The major strength of this project is the convergence of several independent statistical perspectives.
+
+The results are organized around six major dimensions.
+
+### 21.1 Trend Dimension
+
+Mann–Kendall and Sen's slope identify long-term directional changes.
+
+### 21.2 Structural Dimension
+
+Pettitt and PELT identify abrupt and potentially multiple structural changes.
+
+### 21.3 Distributional Dimension
+
+Quantile regression evaluates whether changes differ across the precipitation distribution.
+
+### 21.4 Extreme-Value Dimension
+
+GEV, GPD and POT investigate the statistical behavior of rare precipitation events.
+
+### 21.5 Time-Frequency Dimension
+
+Wavelet and wavelet coherence analyses identify non-stationary periodicities and scale-dependent relationships.
+
+### 21.6 Regime Dimension
+
+PCA, clustering and multivariate regime analysis identify changes in the underlying hydroclimatic structure.
+
+The convergence of these dimensions provides a substantially more comprehensive interpretation than any individual method could provide independently.
+
+---
+
+# 22. Main Scientific Findings
+
+The complete results should be interpreted as a **structural assessment of hydroclimatic change**, rather than as a simple precipitation trend study.
+
+The analysis demonstrates the importance of examining:
+
+* precipitation intensity rather than totals alone,
+* extreme-event frequency rather than averages alone,
+* distributional tails rather than only the mean,
+* structural breaks rather than assuming stationarity,
+* periodicity rather than assuming purely stochastic variability,
+* and regime persistence rather than treating every year as statistically equivalent.
+
+The combined analyses indicate that hydroclimatic variability in the Eastern Black Sea Region should be interpreted as a **multidimensional and potentially non-stationary system**.
+
+The extreme precipitation component is especially important because changes in the upper tail may imply increasing hydrological risk even where the long-term average precipitation signal is comparatively weak or heterogeneous.
+
+The quantile-based framework further allows the study to distinguish ordinary precipitation behavior from changes occurring at higher precipitation quantiles.
+
+The change-point analyses provide evidence for examining the climate record as a sequence of statistically different periods rather than a single homogeneous population.
+
+The wavelet analyses add another dimension by demonstrating that precipitation variability may operate at multiple temporal scales and that these relationships may not remain constant throughout the study period.
+
+Finally, PCA, clustering and regime analysis provide a system-level interpretation by showing how multiple hydroclimatic indicators can be combined to identify distinct statistical states.
+
+---
+
+# 23. Why This Framework Matters
+
+A conventional hydroclimatic study might ask:
+
+> "Is precipitation increasing or decreasing?"
+
+This project asks a broader set of questions:
+
+> **Is the precipitation distribution changing?**
+
+> **Are extreme events becoming statistically different?**
+
+> **Are structural breaks occurring?**
+
+> **Are changes concentrated in the upper tail?**
+
+> **Are temporal periodicities changing?**
+
+> **Are hydroclimatic variables becoming differently coupled?**
+
+> **Is the system moving between distinct statistical regimes?**
+
+This distinction represents the principal methodological contribution of the project.
+
+---
+
+# 24. Complete Results Repository
+
+The repository contains structured numerical outputs supporting the analysis:
+
+| Result File                                    | Analytical Component             |
+| ---------------------------------------------- | -------------------------------- |
+| `East_BlackSea_Master_Analysis.xlsx`           | Integrated master results        |
+| `East_BlackSea_Drought_Aridity_Indices.xlsx`   | Drought and aridity indicators   |
+| `East_BlackSea_Precipitation_Indices.xlsx`     | Precipitation indices            |
+| `East_BlackSea_ETCCDI_Extremes.xlsx`           | Extreme precipitation indicators |
+| `East_BlackSea_Trend_Analysis_Results.xlsx`    | Trend analysis                   |
+| `East_BlackSea_Pettitt_Test_Results.xlsx`      | Pettitt change-point results     |
+| `East_BlackSea_PELT_Change_Points.xlsx`        | PELT segmentation                |
+| `East_BlackSea_Quantile_Regression.xlsx`       | Quantile regression              |
+| `East_BlackSea_EVT_Results.xlsx`               | Extreme Value Theory             |
+| `East_BlackSea_Wavelet_Analysis.xlsx`          | Wavelet analysis                 |
+| `Hydroclimatological_PCA_Analysis.xlsx`        | PCA results                      |
+| `Analysis_24_Multivariate_Regime_Results.xlsx` | Multivariate regimes             |
+| `East_BlackSea_Regime_Analysis_R.xlsx`         | Regime analysis                  |
+| `Station_Correlation_Analysis.xlsx`            | Station correlations             |
+| `Station_Clustering_Report.xlsx`               | Station clustering               |
+
+---
+
+# 25. Complete Graphical Evidence
+
+The repository includes publication-oriented visualizations supporting the statistical analyses.
+
+### Correlation Structure
+
+![Correlation Heatmap](Academic_Correlation_Heatmap.png)
+
+### PCA Scree Structure
+
+![PCA Scree Plot](PCA_ScreePlot_Academic.png)
+
+### PCA Variable Structure
+
+![PCA Variable Biplot](PCA_Variable_Biplot_Academic.png)
+
+### Clustering Structure
+
+![Clustering](Publication_Quality_Clustering.png)
+
+### Artvin Regimes
+
+![Artvin Regimes](Artvin_Regimes_Academic.png)
+
+### Giresun Regimes
+
+![Giresun Regimes](Giresun_Regimes_Academic.png)
+
+### Ordu Regimes
+
+![Ordu Regimes](Ordu_Regimes_Academic.png)
+
+### Rize Regimes
+
+![Rize Regimes](Rize_Regimes_Academic.png)
+
+### Trabzon Regimes
+
+![Trabzon Regimes](Trabzon_Regimes_Academic.png)
+
+---
+
+# 26. Methodological Contribution
+
+The project integrates several methodological traditions that are often applied independently:
+
+```text
+Non-parametric Statistics
+        +
+Change-Point Detection
+        +
+Quantile Regression
+        +
+Extreme Value Theory
+        +
+Wavelet Analysis
+        +
+Multivariate Statistics
+        +
+Clustering
+        +
+Regime Analysis
+```
+
+This integration creates a more comprehensive framework for studying **non-stationary hydroclimatic variability and precipitation extremes**.
+
+The methodological architecture is particularly appropriate for regions where:
+
+* precipitation is strongly heterogeneous,
+* topography influences atmospheric processes,
+* extreme precipitation is important,
+* and climate variability cannot be adequately represented by a single linear trend.
+
+---
+
+# 27. Reproducibility
 
 All statistical analyses are implemented in **R**.
 
-The project is designed according to reproducible research principles:
+The project follows a reproducible research structure:
 
-* Automated data processing
-* Reproducible statistical procedures
-* Script-based analysis
-* Standardized outputs
-* High-resolution figures
-* Transparent methodology
-* Structured result tables
+```text
+Raw Data
+   ↓
+Quality Control
+   ↓
+Data Processing
+   ↓
+Indicator Calculation
+   ↓
+Statistical Analysis
+   ↓
+Numerical Results
+   ↓
+Visualization
+   ↓
+Scientific Interpretation
+```
 
-The repository will progressively include the R scripts, processed datasets where distribution is permitted, statistical outputs, and visualization files.
+The repository contains:
+
+* R scripts,
+* processed analytical outputs,
+* Excel result tables,
+* high-resolution figures,
+* station-level regime visualizations,
+* and methodological documentation.
+
+Every major result is intended to be traceable from the original data-processing stage through statistical estimation and graphical representation.
 
 ---
 
-# 24. Project Structure
+# 28. Scientific Scope
+
+This research contributes to the following fields:
+
+* Hydroclimatology
+* Climate Variability
+* Climate Change Assessment
+* Extreme Precipitation Analysis
+* Extreme Value Theory
+* Climate Statistics
+* Time-Series Analysis
+* Non-Parametric Statistics
+* Quantile Regression
+* Wavelet Analysis
+* Multivariate Statistics
+* Climate Regime Detection
+* Drought and Aridity Analysis
+* Atmospheric Moisture Dynamics
+* Hydrological Risk Assessment
+
+---
+
+# 29. Potential Applications
+
+The analytical framework can support future research concerning:
+
+* extreme precipitation risk,
+* flood hazard assessment,
+* climate adaptation,
+* water-resource management,
+* infrastructure planning,
+* regional climate-risk assessment,
+* hydroclimatic monitoring,
+* disaster-risk reduction,
+* and environmental impact assessment.
+
+The regime-based framework may also provide a useful basis for future studies involving climate projections and non-stationary risk assessment.
+
+---
+
+# 30. Limitations and Research Status
+
+This repository represents an ongoing research and analytical development project.
+
+The numerical outputs and visualizations currently available in the repository are being progressively integrated and validated. Consequently, individual statistical results should be interpreted within the context of the current analytical version.
+
+Future development will focus on:
+
+* final statistical validation,
+* consistency checks among independent methods,
+* integrated interpretation of change points,
+* refinement of extreme-value models,
+* further validation of regime classification,
+* and consolidation of the final scientific results.
+
+---
+
+# 31. Author
+
+## Ahmet Solmaz
+
+**Geography · Climatology · Hydroclimatology · Climate Data Analysis · R Statistical Computing**
+
+This project was independently developed and prepared by **Ahmet Solmaz**.
+
+The research reflects an integrated approach to hydroclimatic data analysis, combining statistical climatology, extreme-event analysis, time-series methods, multivariate statistics and climate-regime detection.
+
+---
+
+# 32. Project Structure
 
 ```text
-Eastern-Black-Sea-Hydroclimatic-Regimes/
-│
-├── data/
-│   ├── raw/
-│   └── processed/
+Changing-Hydroclimatic-Regimes-and-Extreme-Precipitation-Dynamics/
 │
 ├── R/
-│   ├── 01_data_download.R
-│   ├── 02_data_cleaning.R
-│   ├── 03_hydroclimatic_indices.R
-│   ├── 04_extreme_precipitation.R
-│   ├── 05_mann_kendall.R
-│   ├── 06_sens_slope.R
-│   ├── 07_change_points.R
-│   ├── 08_quantile_regression.R
-│   ├── 09_extreme_value_theory.R
-│   ├── 10_wavelet_analysis.R
-│   ├── 11_markov_switching.R
-│   ├── 12_pca_clustering.R
-│   └── 13_visualization.R
+│   ├── 1. Code.R
+│   ├── 2. Code.R
+│   ├── 3. Code.R
+│   ├── 4. Code.R
+│   ├── 5. Code.R
+│   ├── 6. Code.R
+│   ├── 7. Code.R
+│   ├── 8. Code.R
+│   ├── 9. Code.R
+│   ├── 10. Code.R
+│   ├── 11. Code.R
+│   ├── 12. Code.R
+│   ├── 13. Code.R
+│   └── 14. Code.R
 │
-├── figures/
+├── Results/
+│   ├── Trend Analysis
+│   ├── Change Points
+│   ├── Extreme Value Theory
+│   ├── Quantile Regression
+│   ├── Wavelet Analysis
+│   ├── PCA
+│   ├── Clustering
+│   └── Regime Analysis
 │
-├── results/
+├── Figures/
+│   ├── Correlation
+│   ├── PCA
+│   ├── Clustering
+│   └── Station Regimes
 │
-├── tables/
+├── Excel Outputs/
+│   ├── Hydroclimatic Indices
+│   ├── Extreme Precipitation
+│   ├── EVT
+│   ├── PELT
+│   ├── Pettitt
+│   ├── Quantile Regression
+│   ├── Wavelet
+│   ├── PCA
+│   └── Regime Analysis
 │
 └── README.md
 ```
 
 ---
 
-# 25. Reproducibility Philosophy
+# 33. Conclusion
 
-The project follows an open and reproducible analytical philosophy.
+This project presents an integrated statistical investigation of changing hydroclimatic regimes and extreme precipitation dynamics in the Eastern Black Sea Region of Türkiye.
 
-Every major statistical result should be traceable from:
+The principal methodological strength lies in combining **trend detection, structural-break analysis, distributional analysis, extreme-value statistics, time-frequency analysis, dimensionality reduction, clustering and regime identification**.
 
-**NASA POWER data → preprocessing → index calculation → statistical model → numerical result → visualization.**
+The resulting framework moves beyond the conventional interpretation of climate change as a simple increase or decrease in average precipitation.
 
-This structure is intended to make the analysis transparent and independently reproducible.
+Instead, it considers the hydroclimatic system as a potentially **non-stationary, multiscale and regime-dependent system** in which the frequency, intensity, persistence, distribution and probability of extreme events may evolve differently through time.
 
----
-
-# 26. Scientific Scope
-
-This project contributes to the broader fields of:
-
-* Climate variability
-* Hydroclimatology
-* Extreme precipitation analysis
-* Climate statistics
-* Time-series analysis
-* Extreme Value Theory
-* Climate regime detection
-* Atmospheric moisture dynamics
-* Climate change assessment
-
-The methodology is particularly relevant for understanding the changing behavior of extreme precipitation in humid and topographically complex environments.
+Accordingly, the project provides a comprehensive statistical foundation for understanding how hydroclimatic variability and extreme precipitation behavior are changing across one of Türkiye's most precipitation-sensitive regions.
 
 ---
 
-# 27. Author
-
-**Ahmet Solmaz**
-
-Geography | Climatology | Hydroclimatology | Climate Data Analysis | R Statistical Computing
-
-This project is independently developed by **Ahmet Solmaz** as a reproducible research project focused on advanced statistical analysis of hydroclimatic variability and precipitation extremes in the Eastern Black Sea Region of Türkiye.
-
----
-
-# 28. Project Status
-
-**Status:** Research and analytical development
-
-The statistical analysis, visualization, and interpretation stages are being progressively developed.
-
-Final numerical results will be added after completion and validation of the full analytical workflow.
-
----
-
-# 29. Keywords
+# Keywords
 
 `Eastern Black Sea`
 `Türkiye`
@@ -662,18 +952,28 @@ Final numerical results will be added after completion and validation of the ful
 `POT`
 `Wavelet Analysis`
 `Wavelet Coherence`
+`PCA`
+`Clustering`
 `Markov Switching`
+`Hydroclimatic Regimes`
 `SPI`
 `SPEI`
-`Penman-Monteith`
+`PET`
 `R Programming`
-`Time Series Analysis`
+`Time-Series Analysis`
 
 ---
 
 ## Citation
 
-If this repository contributes to your research, please acknowledge the project and the underlying NASA POWER data source.
+If this repository or its analytical framework is used in academic research, please acknowledge:
 
-**Author:** Ahmet Solmaz
-**Project:** *Changing Hydroclimatic Regimes and Extreme Precipitation Dynamics in the Eastern Black Sea Region of Türkiye*
+**Solmaz, A. — Changing Hydroclimatic Regimes and Extreme Precipitation Dynamics in the Eastern Black Sea Region of Türkiye.**
+
+---
+
+### Researcher
+
+**Ahmet Solmaz**
+
+*Independent Research Project — Hydroclimatology, Climate Statistics and Extreme Precipitation Analysis*
